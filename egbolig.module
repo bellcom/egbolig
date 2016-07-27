@@ -1,0 +1,65 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+function egbolig_menu() {
+  $items['admin/config/system/egbolig'] = array(
+    'title'            => t('Configure EGbolig'),
+    'description'      => t('Configure EGbolig settings'),
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('egbolig_settings'),
+    'access arguments' => array('access administration pages'),
+    'type'             => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+function egbolig_settings() {
+  $form = array();
+
+  $form['soap_webservice'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Webservice URL',
+    '#required' => TRUE,
+    '#default_value' => variable_get('soap_webservice', NULL),
+    '#description' => 'http://egboligws.ballerup.dk/services/service10632.svc?wsdl',
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_webform_select_options_info().
+ */
+function egbolig_webform_select_options_info() {
+  $items = array();
+  $items['education'] = array(
+    'title' => t('Education'),
+    'options callback' => 'webform_options_education',
+  );
+  return $items;
+}
+
+/**
+ * Webform options info callback.
+ */
+function webform_options_education() {
+  $client = new SoapClient(variable_get('soap_webservice'));
+  $educations = $client->EducationGetList()->EducationGetListResult->Education;
+  $edulist = array();
+
+  foreach ($educations as $education) {
+    if (strlen($education->Name) == 1) {
+      continue;
+    }
+    elseif ($education->Name == 'æ' || $education->Name == 'ø' || $education->Name == 'å') {
+      continue;
+    }
+    else {
+      $edulist[] = $education->Name;
+    }
+  }
+
+  return $edulist;
+}

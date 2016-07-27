@@ -1,0 +1,5 @@
+name = EGbolig
+description = EGbolig webservice module.
+core = 7.x
+files[] = egbolig.module
+dependencies[] = drupal_nemid_login
