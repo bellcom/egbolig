@@ -57,9 +57,25 @@ function webform_options_education() {
       continue;
     }
     else {
-      $edulist[] = $education->Name;
+      $edulist[] = upper_case($education->Name);
     }
   }
 
   return $edulist;
+}
+function upper_case($string) {
+  $first_letter = substr($string, 0, 2);
+  switch($first_letter) {
+  case 'æ':
+    return 'Æ'.substr($string, 2);
+    break;
+  case 'ø':
+    return 'Ø'.substr($string, 2);
+    break;
+  case 'å':
+    return 'Å'.substr($string, 2);
+    break;
+  default:
+    return ucfirst($string);
+  }
 }
