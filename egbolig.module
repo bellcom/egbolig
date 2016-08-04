@@ -29,22 +29,11 @@ function egbolig_settings() {
   return system_settings_form($form);
 }
 
-/**
- * Implements hook_webform_select_options_info().
- */
-function egbolig_webform_select_options_info() {
-  $items = array();
-  $items['education'] = array(
-    'title' => t('Education'),
-    'options callback' => 'webform_options_education',
-  );
-  return $items;
-}
 
 /**
  * Webform options info callback.
  */
-function webform_options_education() {
+function education_get_list() {
   $client = new SoapClient(variable_get('soap_webservice'));
   $educations = $client->EducationGetList()->EducationGetListResult->Education;
   $edulist = array();
@@ -57,13 +46,45 @@ function webform_options_education() {
       continue;
     }
     else {
-      $edulist[] = upper_case($education->Name);
+      $edulist[] = _upper_case($education->Name);
     }
   }
 
   return $edulist;
 }
-function upper_case($string) {
+
+function education_places() {
+  $placeslist = array();
+  $client = new SoapClient(variable_get('soap_webservice'));
+  $education_places =  
+    $client->EducationalInstitutionGetList()->EducationalInstitutionGetListResult->EducationalInstitution;
+  foreach($education_places as $place)
+  {
+      $placeslist[] = $place->Name;
+  }
+  return $placeslist;
+}
+
+function accomodation_types() {
+  $accomodationlist = array();
+  $client = new SoapClient(variable_get('soap_webservice'));
+  $apartment_types = $client->HousingTypeGetList();
+    $client->ApartmentTypeGetList()->
+      ApartmentTypeGetListResult->
+      ApartmentType;
+  foreach($apartment_types as $type) {
+    if(strlen($type) == 1) {
+      continue;
+    }
+    else {
+      $accomodationlist[] = $type;
+    }
+  }
+  return $accomodationlist;
+}
+
+
+function _upper_case($string) {
   $first_letter = substr($string, 0, 2);
   switch($first_letter) {
   case 'æ':
