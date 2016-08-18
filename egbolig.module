@@ -69,7 +69,6 @@ function education_places() {
   else {
     $placeslist[] = 'Ingen uddannelsessteder';
   }
-  dpm($placeslist);
   return $placeslist;
 }
 
