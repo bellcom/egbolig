@@ -57,28 +57,31 @@ function education_places() {
   $placeslist = array();
   $client = new SoapClient(variable_get('soap_webservice'));
   $education_places =  
-    $client->EducationalInstitutionGetList()->EducationalInstitutionGetListResult->EducationalInstitution;
-  foreach($education_places as $place)
-  {
-      $placeslist[] = $place->Name;
+    $client->EducationalInstitutionGetList()->
+    EducationalInstitutionGetListResult->
+    EducationalInstitution;
+  if(count($education_places) > 0) {
+    foreach($education_places as $place)
+    {
+        $placeslist[] = $place->Name;
+    }
   }
+  else {
+    $placeslist[] = 'Ingen uddannelsessteder';
+  }
+  dpm($placeslist);
   return $placeslist;
 }
 
 function accomodation_types() {
   $accomodationlist = array();
   $client = new SoapClient(variable_get('soap_webservice'));
-  $apartment_types = $client->HousingTypeGetList();
-    $client->ApartmentTypeGetList()->
-      ApartmentTypeGetListResult->
-      ApartmentType;
+  $apartment_types =
+    $client->TenancyTypeGetList()->
+    TenancyTypeGetListResult->
+    TenancyType;
   foreach($apartment_types as $type) {
-    if(strlen($type) == 1) {
-      continue;
-    }
-    else {
-      $accomodationlist[] = $type;
-    }
+      $accomodationlist[] = $type->Text;
   }
   return $accomodationlist;
 }
