@@ -1,0 +1,5 @@
+name = Accomodation Application
+description =  accomodation application module.
+core = 7.x
+files[] = accomodation.module
+dependencies[] = egbolig
